@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ChangePy – Python Obfuscator &amp; Deobfuscator</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0F1419">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#0F1419;--c-surface:#161B22;--c-surface2:#1C232D;--c-border:#2A3340;--c-text:#E6E8EB;--c-muted:#8B949E;--c-amber:#F2B134;--c-teal:#3FB8AF;--c-red:#E5534B;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c-bg:#0F1419;--c-surface:#161B22;--c-surface2:#1C232D;--c-border:#2A3340;--c-text:#E6E8EB;--c-muted:#8B949E;--c-amber:#F2B134;--c-teal:#3FB8AF;--c-red:#E5534B}}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--c-bg:#F4F2EC;--c-surface:#FFFFFF;--c-surface2:#ECE8DD;--c-border:#D8D2C2;--c-text:#1B1A17;--c-muted:#6B6558;--c-amber:#B9780F;--c-teal:#1E7A72;--c-red:#B23A33}}
+:root[data-theme="dark"]{--c-bg:#0F1419;--c-surface:#161B22;--c-surface2:#1C232D;--c-border:#2A3340;--c-text:#E6E8EB;--c-muted:#8B949E;--c-amber:#F2B134;--c-teal:#3FB8AF;--c-red:#E5534B}
+:root[data-theme="light"]{--c-bg:#F4F2EC;--c-surface:#FFFFFF;--c-surface2:#ECE8DD;--c-border:#D8D2C2;--c-text:#1B1A17;--c-muted:#6B6558;--c-amber:#B9780F;--c-teal:#1E7A72;--c-red:#B23A33}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--c-bg);color:var(--c-text);font-family:'Space Grotesk',system-ui,sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.top{max-width:1180px;margin:0 auto;padding:22px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-size:24px;font-weight:700;letter-spacing:-.01em}.logo i{font-style:normal;color:var(--c-amber)}
+nav{display:flex;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px}
+nav a{padding:7px 12px;border:1px solid transparent;border-radius:5px;color:var(--c-muted)}
+nav a:hover{color:var(--c-teal);border-color:var(--c-border)}
+nav a.on{color:var(--c-text);border-color:var(--c-border);background:var(--c-surface)}
+main{max-width:1180px;margin:0 auto;padding:0 20px 50px}
+[data-view]{display:none}[data-view].show{display:block}
+.hero{padding:56px 0 34px;max-width:720px}
+.hero h1{font-size:clamp(34px,6vw,54px);line-height:1.08;margin:0 0 16px;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--c-amber)}
+.hero p{color:var(--c-muted);font-size:17px;line-height:1.6;margin:0}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.cards{grid-template-columns:1fr}}
+.card{display:block;background:var(--c-surface);border:1px solid var(--c-border);border-radius:10px;padding:26px;transition:border-color .15s,transform .15s}
+.card:hover,.card:focus-visible{border-color:var(--c-amber);transform:translateY(-2px);outline:none}
+.card.alt:hover,.card.alt:focus-visible{border-color:var(--c-teal)}
+.tag{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--c-teal);border:1px solid var(--c-border);padding:3px 8px;border-radius:3px}
+.card h2{font-size:26px;margin:18px 0 8px}
+.card p{margin:0 0 22px;color:var(--c-muted);line-height:1.6;font-size:15px}
+.go{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--c-amber)}.alt .go{color:var(--c-teal)}
+.info{margin-top:26px;color:var(--c-muted);font-size:13px;font-family:'JetBrains Mono',monospace}
+.nf{padding:60px 0;max-width:720px}
+.nf .big{font-size:clamp(90px,22vw,170px);font-weight:700;line-height:1;letter-spacing:-.04em;color:var(--c-amber);margin:0}
+.nf h1{font-size:28px;margin:6px 0 10px}
+.nf p{color:var(--c-muted);line-height:1.6;margin:0 0 20px}
+pre.tb{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;font:13px/1.6 'JetBrains Mono',monospace;overflow-x:auto;margin:0 0 24px;color:var(--c-muted)}
+pre.tb b{color:var(--c-red)}
+.btn{display:inline-block;background:var(--c-amber);color:#1B1405;font-weight:700;padding:11px 22px;border-radius:6px}
+.btn:focus-visible{outline:2px solid var(--c-teal);outline-offset:2px}
+footer{max-width:1180px;margin:0 auto;padding:0 20px 30px;color:var(--c-muted);font:12px 'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#/">changepy<i>.</i></a>
+  <nav><a href="#/obfuscator" data-nav="obf">Obfuscator</a><a href="#/deobfuscator" data-nav="de">Deobfuscator</a></nav>
+</header>
+<main>
+  <section data-view="home">
+    <div class="hero">
+      <h1>Change your Python.<br><em>Hide it or unwrap it.</em></h1>
+      <p>Two free tools in one place: scramble your source code so it’s hard to read, or peel obfuscated code back layer by layer. Everything runs in your browser. Nothing is uploaded or executed.</p>
+    </div>
+    <div class="cards">
+      <a class="card" href="#/obfuscator">
+        <span class="tag">source → shrouded</span>
+        <h2>Obfuscator</h2>
+        <p>Strip comments, scramble names, compress with deflate and add an XOR layer. The result runs with just the standard library.</p>
+        <span class="go">Open obfuscator →</span>
+      </a>
+      <a class="card alt" href="#/deobfuscator">
+        <span class="tag">shrouded → source</span>
+        <h2>Deobfuscator</h2>
+        <p>Decodes base64, hex, rot13, zlib, escapes, chr() chains and exec/eval wrappers statically, step by step.</p>
+        <span class="go">Open deobfuscator →</span>
+      </a>
+    </div>
+    <p class="info">no login · runs locally · free</p>
+  </section>
+
+  <section data-view="obf"><div id="host-obf"></div></section>
+  <section data-view="de"><div id="host-de"></div></section>
+
+  <section data-view="nf">
+    <div class="nf">
+      <p class="big">404</p>
+      <h1>This page doesn’t exist.</h1>
+      <p>The route you tried to open isn’t part of ChangePy. Maybe the link is old or has a typo.</p>
+<pre class="tb">Traceback (most recent call last):
+  File "changepy", line 1, in &lt;module&gt;
+    open_route(<span id="nf-path"></span>)
+<b>RouteNotFoundError: 404</b></pre>
+      <a class="btn" href="#/">← Back to home</a>
+    </div>
+  </section>
+</main>
+<footer>changepy · everything runs locally — nothing you paste is uploaded anywhere.</footer>
+
+<template id="tpl-obf"><style>:host{display:block;--bg:var(--c-bg);--surface:var(--c-surface);--surface2:var(--c-surface2);--border:var(--c-border);--text:var(--c-text);--muted:var(--c-muted);--amber:var(--c-amber);--teal:var(--c-teal);--red:var(--c-red)}*{box-sizing:border-box}
+.tool{color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif}
+.wrap{max-width:1180px; margin:0 auto; padding:28px 20px 60px;}
+header{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:6px;}
+.title{display:flex; align-items:baseline; gap:12px;}
+h1{font-size:28px; margin:0; font-weight:700; letter-spacing:-0.01em;}
+h1 .dot{color:var(--amber);}
+.tagline{color:var(--muted); font-size:14px; margin:0 0 22px;}
+.badge{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--teal); border:1px solid var(--border); padding:4px 9px; border-radius:3px; background:var(--surface);}
+.panel{background:var(--surface); border:1px solid var(--border); border-radius:8px;}
+.toolbar{padding:16px 18px; display:flex; flex-wrap:wrap; gap:18px 26px; align-items:center; margin-bottom:18px;}
+.opt{display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text); cursor:pointer; user-select:none;}
+.opt input{accent-color:var(--amber); width:15px; height:15px; cursor:pointer;}
+.opt .hint{color:var(--muted); font-size:11.5px; font-family:'JetBrains Mono',monospace;}
+.spacer{flex:1;}
+button.primary{
+  background:var(--amber); color:#1B1405; border:none; font-family:'Space Grotesk',sans-serif;
+  font-weight:700; font-size:14px; padding:11px 22px; border-radius:6px; cursor:pointer;
+}
+button.primary:active{transform:translateY(1px);}
+button.ghost{
+  background:transparent; color:var(--text); border:1px solid var(--border); font-family:'JetBrains Mono',monospace;
+  font-size:12.5px; padding:8px 13px; border-radius:5px; cursor:pointer;
+}
+button.ghost:hover{border-color:var(--teal); color:var(--teal);}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:860px){.grid{grid-template-columns:1fr;}}
+.pane-head{display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border);}
+.pane-head .label{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.02em;}
+.pane-head .size{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--teal);}
+.pane-head .size.over{color:var(--red);}
+textarea{
+  width:100%; height:440px; resize:vertical; background:transparent; color:var(--text);
+  border:none; outline:none; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.55;
+  padding:16px; overflow:auto;
+}
+.actions{display:flex; gap:8px; padding:10px 16px; border-top:1px solid var(--border);}
+.note{color:var(--muted); font-size:12.5px; margin-top:16px; line-height:1.6;}
+.note strong{color:var(--text);}
+footer{margin-top:30px; color:var(--muted); font-size:12px; font-family:'JetBrains Mono',monospace;}
+::placeholder{color:var(--muted); opacity:0.6;}
+</style><div class="tool">
+<div class="wrap" style="padding-top:8px">
+  <header>
+    <div class="title">
+      <h1>Obfuscator<span class="dot">.</span></h1>
+    </div>
+    <span class="badge">no login · runs in your browser · free</span>
+  </header>
+  <p class="tagline">Obfuscate Python source — compression, byte-ciphering and identifier scrambling, handled entirely client-side. Files up to ~70 KB.</p>
+
+  <div class="panel toolbar">
+    <label class="opt"><input type="checkbox" id="optStrip" checked> Strip comments &amp; docstrings</label>
+    <label class="opt"><input type="checkbox" id="optRename" checked> Scramble local names <span class="hint">best-effort</span></label>
+    <label class="opt"><input type="checkbox" id="optCompress" checked> Compress (deflate)</label>
+    <label class="opt"><input type="checkbox" id="optXor" checked> XOR cipher layer</label>
+    <label class="opt"><input type="checkbox" id="optJunk"> Insert decoy variables</label>
+    <div class="spacer"></div>
+    <button class="primary" id="runBtn">Obfuscate →</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="pane-head">
+        <span class="label">source.py</span>
+        <span class="size" id="inSize">0 B</span>
+      </div>
+      <textarea id="input" placeholder="Paste your Python source here…" spellcheck="false"></textarea>
+      <div class="actions">
+        <button class="ghost" id="loadFile">Load file</button>
+        <button class="ghost" id="sample">Load sample</button>
+        <button class="ghost" id="clearIn">Clear</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="pane-head">
+        <span class="label">obfuscated.py</span>
+        <span class="size" id="outSize">0 B</span>
+      </div>
+      <textarea id="output" placeholder="Obfuscated output appears here…" spellcheck="false" readonly></textarea>
+      <div class="actions">
+        <button class="ghost" id="copyBtn">Copy</button>
+        <button class="ghost" id="downloadBtn">Download .py</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    <strong>How it works:</strong> comment/docstring stripping and identifier scrambling are regex-based best-effort passes — review output before relying on it for complex metaprogramming. Compression uses the browser's native deflate stream; the XOR layer uses a random per-run key. Output always re-expands and runs through a short bootstrap using only Python's standard library (<code>zlib</code>, <code>base64</code>) — no dependencies required to run the result.
+  </p>
+
+  <footer>everything above runs locally — nothing you paste is uploaded anywhere.</footer>
+</div>
+
+<input type="file" id="fileInput" accept=".py,text/plain" style="display:none">
+
+</div></template>
+<template id="tpl-de"><style>:host{display:block;--bg:transparent;--panel:var(--c-surface);--ink:var(--c-text);--mute:var(--c-muted);--line:var(--c-border);--acc:var(--c-teal);--accink:#06201a;--warn:var(--c-amber);--code:var(--c-bg)}*{box-sizing:border-box}
+.tool{color:var(--ink);font:15px/1.5 'Space Grotesk',system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+h1{font:700 28px/1.2 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.01em;margin:0 0 4px}
+p.sub{margin:0 0 18px;color:var(--mute);max-width:70ch}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:800px){.grid{grid-template-columns:1fr}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+label{display:block;font-weight:600;margin-bottom:6px}
+textarea{width:100%;height:340px;resize:vertical;border:1px solid var(--line);border-radius:6px;background:var(--code);color:var(--ink);padding:10px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;tab-size:4}
+textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button{font:600 14px system-ui,sans-serif;padding:8px 14px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+button.p{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+#log{margin:0;padding:0;list-style:none;font-size:13px}
+#log li{padding:5px 0;border-top:1px solid var(--line)}
+#log li:first-child{border-top:0}
+#log .w{color:var(--warn)}
+#log b{color:var(--acc)}
+.cap{color:var(--mute);font-size:13px;margin:10px 0 0}
+</style><div class="tool">
+<main>
+<h1>Deobfuscator</h1>
+<p class="sub">Paste obfuscated Python and peel it back layer by layer. Everything is decoded as text in your browser; nothing is ever executed or sent anywhere.</p>
+<div class="grid">
+  <div class="box"><label for="in">Obfuscated code</label><textarea id="in" spellcheck="false" placeholder="exec(base64.b64decode('...'))"></textarea></div>
+  <div class="box"><label for="out">Deobfuscated result</label><textarea id="out" spellcheck="false" readonly></textarea></div>
+</div>
+<div class="bar">
+  <button class="p" id="go">Deobfuscate</button>
+  <button id="copy">Copy result</button>
+  <button id="sample">Load sample</button>
+  <button id="clear">Clear</button>
+</div>
+<div class="box"><label>Steps applied</label><ul id="log"><li>No run yet.</li></ul></div>
+<p class="cap">Handles: base64 / hex / rot13 / zlib / gzip wrappers, string escapes (\x, \u, octal), chr() chains, join(map(chr, ...)), string concatenation, [::-1] reversal, and exec/eval of string literals. Marshal, PyArmor, bz2 and lzma payloads are detected but can't be reversed statically.</p>
+</main>
+</div></template>
+
+<script>
+function initObf(root){
+
+const $ = id => root.getElementById(id);
+const input = $('input'), output = $('output');
+
+const SAMPLE = `def greet(name, times=1):
+    """Say hello a given number of times."""
+    for i in range(times):
+        message = f"Hello, {name}!"
+        print(message)
+    return times
+
+class Counter:
+    def __init__(self):
+        self.value = 0
+
+    def increment(self, step=1):
+        # bump the counter
+        self.value += step
+        return self.value
+
+if __name__ == "__main__":
+    greet("world", 3)
+    c = Counter()
+    for _ in range(5):
+        c.increment()
+    print(c.value)
+`;
+
+function fmtSize(n){
+  if(n < 1024) return n + ' B';
+  return (n/1024).toFixed(1) + ' KB';
+}
+function updateSizes(){
+  const inB = new Blob([input.value]).size;
+  const outB = new Blob([output.value]).size;
+  $('inSize').textContent = fmtSize(inB);
+  $('inSize').classList.toggle('over', inB > 71680);
+  $('outSize').textContent = fmtSize(outB);
+}
+input.addEventListener('input', updateSizes);
+
+$('sample').onclick = () => { input.value = SAMPLE; updateSizes(); };
+$('clearIn').onclick = () => { input.value = ''; updateSizes(); };
+$('loadFile').onclick = () => $('fileInput').click();
+$('fileInput').onchange = e => {
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { input.value = r.result; updateSizes(); };
+  r.readAsText(f);
+};
+
+const PY_KEYWORDS = new Set(("False None True and as assert async await break class continue def del elif else "+
+  "except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield "+
+  "self print len range str int float list dict set tuple bool object type Exception None_ __init__ __name__ __main__ "+
+  "super open enumerate zip map filter sorted min max sum abs isinstance hasattr getattr setattr").split(' '));
+
+function stripCommentsAndDocstrings(src){
+  let lines = src.split('\n');
+  let out = [];
+  let inTriple = null; // "'''" or '"""'
+  for(let raw of lines){
+    let line = raw;
+    if(inTriple){
+      const idx = line.indexOf(inTriple);
+      if(idx === -1){ continue; }
+      line = line.slice(idx + 3);
+      inTriple = null;
+    }
+    // detect start of a standalone triple-quoted string (docstring) at line start (ignoring indent)
+    const trimmed = line.trim();
+    if(/^('''|""")/.test(trimmed)){
+      const q = trimmed.slice(0,3);
+      const rest = trimmed.slice(3);
+      const endIdx = rest.indexOf(q);
+      if(endIdx === -1){ inTriple = q; continue; }
+      else { continue; } // single-line docstring, drop entirely
+    }
+    // strip trailing # comment, naive (ignores # inside quotes imperfectly but covers common cases)
+    let inStr = null, res = '';
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(inStr){
+        res += ch;
+        if(ch === inStr && line[i-1] !== '\\') inStr = null;
+      } else {
+        if(ch === '"' || ch === "'"){ inStr = ch; res += ch; }
+        else if(ch === '#'){ break; }
+        else res += ch;
+      }
+    }
+    if(res.trim().length) out.push(res.replace(/\s+$/,''));
+    else if(raw.trim().length === 0) continue; // drop blank lines
+  }
+  return out.join('\n');
+}
+
+function computeProtectedRanges(src){
+  // returns [start,end) spans covering comments and string-literal contents,
+  // so renaming never touches text inside quotes (e.g. regex patterns in strings)
+  const ranges = [];
+  const n = src.length;
+
+  // protect string-prefix letters (r, b, u, f, rb, br, fr, rf, ...) that sit
+  // directly before a quote — these are syntax, not references to a same-named
+  // identifier (e.g. a variable called `r` vs. the r in r"...")
+  const prefixRe = /\b(?:[rRbBfFuU]|[rRbBfF]{2})(?=["'])/g;
+  let pm;
+  while((pm = prefixRe.exec(src))){
+    ranges.push([pm.index, pm.index + pm[0].length]);
+  }
+
+  let i = 0;
+  while(i < n){
+    const ch = src[i];
+    if(ch === '#'){
+      let j = i;
+      while(j < n && src[j] !== '\n') j++;
+      ranges.push([i, j]);
+      i = j;
+      continue;
+    }
+    if(ch === '"' || ch === "'"){
+      if(src.slice(i, i+3) === ch+ch+ch){
+        const quote = ch+ch+ch;
+        const close = src.indexOf(quote, i+3);
+        const end = close === -1 ? n : close + 3;
+        ranges.push([i, end]);
+        i = end;
+        continue;
+      }
+      let j = i + 1;
+      while(j < n){
+        if(src[j] === '\\'){ j += 2; continue; }
+        if(src[j] === ch){ j++; break; }
+        if(src[j] === '\n') break; // unterminated on this line, bail out
+        j++;
+      }
+      ranges.push([i, j]);
+      i = j;
+      continue;
+    }
+    i++;
+  }
+  return ranges;
+}
+
+function inProtected(idx, ranges){
+  for(const [s,e] of ranges) if(idx >= s && idx < e) return true;
+  return false;
+}
+
+function scrambleNames(src){
+  // collect candidate identifiers: function/variable names after 'def ' or simple assignment targets
+  const defNames = new Set();
+  const defRe = /\bdef\s+([A-Za-z_]\w*)/g;
+  let m;
+  while((m = defRe.exec(src))) if(!PY_KEYWORDS.has(m[1])) defNames.add(m[1]);
+
+  const assignRe = /^\s*([A-Za-z_]\w*)\s*(?:=(?!=)|:[^=\n]*=)/gm;
+  while((m = assignRe.exec(src))) if(!PY_KEYWORDS.has(m[1])) defNames.add(m[1]);
+
+  // never rename dunders, self, or well-known names
+  for(const n of Array.from(defNames)) if(n.startsWith('__') || n === 'self') defNames.delete(n);
+
+  const map = {};
+  let i = 0;
+  for(const name of defNames){
+    i++;
+    map[name] = '_0x' + i.toString(16).padStart(3,'0');
+  }
+  if(Object.keys(map).length === 0) return src;
+
+  const protectedRanges = computeProtectedRanges(src);
+  const namePattern = Object.keys(map)
+    .map(n => n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'))
+    .join('|');
+  const re = new RegExp('\\b(' + namePattern + ')\\b', 'g');
+
+  let out = '';
+  let last = 0;
+  let mm;
+  while((mm = re.exec(src))){
+    const start = mm.index, end = start + mm[0].length;
+    if(inProtected(start, protectedRanges)) continue; // leave text inside strings/comments untouched
+    out += src.slice(last, start) + map[mm[1]];
+    last = end;
+  }
+  out += src.slice(last);
+  return out;
+}
+
+async function deflate(bytes){
+  const cs = new CompressionStream('deflate');
+  const writer = cs.writable.getWriter();
+  writer.write(bytes); writer.close();
+  const chunks = [];
+  const reader = cs.readable.getReader();
+  while(true){
+    const {done, value} = await reader.read();
+    if(done) break;
+    chunks.push(value);
+  }
+  const total = chunks.reduce((a,c)=>a+c.length,0);
+  const merged = new Uint8Array(total);
+  let off = 0;
+  for(const c of chunks){ merged.set(c, off); off += c.length; }
+  return merged;
+}
+
+function xorBytes(bytes, key){
+  const out = new Uint8Array(bytes.length);
+  for(let i=0;i<bytes.length;i++) out[i] = bytes[i] ^ key[i % key.length];
+  return out;
+}
+
+function bytesToB64(bytes){
+  let bin = '';
+  for(let i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+function randKey(len){
+  const k = new Uint8Array(len);
+  crypto.getRandomValues(k);
+  return k;
+}
+
+function junkLines(){
+  const names = ['_cfg','_zz','_tmp9','_flag','_seed','_pad'];
+  const out = [];
+  for(let i=0;i<3;i++){
+    const n = names[Math.floor(Math.random()*names.length)] + Math.floor(Math.random()*999);
+    out.push(`${n} = ${Math.floor(Math.random()*99999)}`);
+  }
+  return out.join('\n') + '\n';
+}
+
+async function obfuscate(){
+  let src = input.value;
+  if(!src.trim()){ output.value = ''; updateSizes(); return; }
+
+  if($('optStrip').checked) src = stripCommentsAndDocstrings(src);
+  if($('optRename').checked) src = scrambleNames(src);
+
+  const enc = new TextEncoder();
+  let bytes = enc.encode(src);
+  let header = ['import base64'];
+  let payloadExpr;
+
+  if($('optCompress').checked){
+    bytes = await deflate(bytes);
+    header.push('import zlib');
+  }
+
+  let key = null;
+  if($('optXor').checked){
+    key = randKey(8);
+    bytes = xorBytes(bytes, key);
+  }
+
+  const b64 = bytesToB64(bytes);
+  let expr = `base64.b64decode(${JSON.stringify(b64)})`;
+  if(key){
+    const keyList = Array.from(key).join(',');
+    header.push(`_k=bytes([${keyList}])`);
+    expr = `bytes(b^_k[i%len(_k)] for i,b in enumerate(${expr}))`;
+  }
+  if($('optCompress').checked){
+    expr = `zlib.decompress(${expr})`;
+  }
+
+  let body = (header.join('\n')) + '\n';
+  if($('optJunk').checked) body += junkLines();
+  body += `exec(${expr}.decode('utf-8'))\n`;
+
+  output.value = body;
+  updateSizes();
+}
+
+$('runBtn').onclick = () => obfuscate().catch(e => { output.value = '# error: ' + e.message; updateSizes(); });
+
+$('copyBtn').onclick = async () => {
+  try{ await navigator.clipboard.writeText(output.value); }catch(e){ output.select(); document.execCommand('copy'); }
+  const b = $('copyBtn'); const old = b.textContent; b.textContent = 'Copied'; setTimeout(()=>b.textContent=old, 1100);
+};
+$('downloadBtn').onclick = () => {
+  const blob = new Blob([output.value], {type:'text/x-python'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'obfuscated.py'; a.click();
+  URL.revokeObjectURL(url);
+};
+
+updateSizes();
+
+}
+function initDe(root){
+
+const LIT = String.raw`[bBrRuU]{0,2}(?:'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*")`;
+const $ = id => root.getElementById(id);
+
+function unesc(body){
+  return body.replace(/\\(x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8}|[0-7]{1,3}|[nrt\\'"abfv]|\n)/g,(m,e)=>{
+    const c=e[0];
+    if(c==='x'||c==='u'||c==='U')return String.fromCodePoint(parseInt(e.slice(1),16));
+    if(/[0-7]/.test(c))return String.fromCharCode(parseInt(e,8));
+    return {n:'\n',r:'\r',t:'\t','\\':'\\',"'":"'",'"':'"',a:'\x07',b:'\b',f:'\f',v:'\v','\n':''}[c];
+  });
+}
+function parseLit(s){
+  const m=s.match(/^([bBrRuU]{0,2})(['"])([\s\S]*)\2$/); if(!m)return null;
+  const raw=/r/i.test(m[1]);
+  return {bytes:/b/i.test(m[1]),val:raw?m[3]:unesc(m[3])};
+}
+function fmt(val,bytes){
+  let o='';
+  for(const ch of val){
+    const c=ch.codePointAt(0);
+    if(ch==='\\')o+='\\\\';else if(ch==="'")o+="\\'";else if(ch==='\n')o+='\\n';
+    else if(ch==='\r')o+='\\r';else if(ch==='\t')o+='\\t';
+    else if(c<32||c===127||(bytes&&c>126))o+='\\x'+c.toString(16).padStart(2,'0');
+    else o+=ch;
+  }
+  return (bytes?'b':'')+"'"+o+"'";
+}
+function toBytes(s){return Uint8Array.from(s,c=>c.charCodeAt(0)&255)}
+function fromBytes(u){let s='';for(const b of u)s+=String.fromCharCode(b);return s}
+function bin2text(s){try{return new TextDecoder('utf-8',{fatal:true}).decode(toBytes(s))}catch{return null}}
+function printable(s){if(!s.length)return false;let ok=0;for(const c of s){const k=c.charCodeAt(0);if(k===9||k===10||k===13||(k>=32&&k<127)||k>159)ok++}return ok/s.length>0.9}
+function strToBin(s){return fromBytes(new TextEncoder().encode(s))}
+
+// each pass: (text) => [newText, note] ; may be async
+const reLit=new RegExp(LIT,'g');
+const passes=[
+ ['Normalised string escapes',t=>t.replace(reLit,m=>{
+    if(!/\\/.test(m))return m;const p=parseLit(m);if(!p||/r/i.test(m.match(/^[bBrRuU]*/)[0]))return m;
+    const o=fmt(p.val,p.bytes);return o===m?m:o;})],
+ ['Folded chr() chains',t=>t.replace(/\bchr\(\s*(0x[0-9a-f]+|\d+)\s*\)(?:\s*\+\s*chr\(\s*(?:0x[0-9a-f]+|\d+)\s*\))*/gi,m=>{
+    const n=[...m.matchAll(/chr\(\s*(0x[0-9a-f]+|\d+)\s*\)/gi)].map(x=>Number(x[1]));
+    try{return fmt(String.fromCodePoint(...n),false)}catch{return m}})],
+ ['Resolved join(map(chr, [...]))',t=>t.replace(/(?:''|"")\.join\(\s*(?:map\(\s*chr\s*,\s*[\[\(]([^\]\)]*)[\]\)]\s*\)|chr\(\w+\)\s+for\s+\w+\s+in\s+[\[\(]([^\]\)]*)[\]\)]\s*)\)/g,(m,a,b)=>{
+    const n=(a||b).split(',').map(x=>x.trim()).filter(Boolean).map(Number);
+    if(n.some(isNaN))return m;try{return fmt(String.fromCodePoint(...n),false)}catch{return m}})],
+ ['Joined string concatenation',t=>t.replace(new RegExp(`(${LIT})\\s*\\+\\s*(${LIT})`,'g'),(m,a,b)=>{
+    const x=parseLit(a),y=parseLit(b);if(!x||!y||x.bytes!==y.bytes)return m;return fmt(x.val+y.val,x.bytes)})],
+ ['Reversed [::-1] literal',t=>t.replace(new RegExp(`(${LIT})\\[::-1\\]`,'g'),(m,a)=>{
+    const x=parseLit(a);return x?fmt([...x.val].reverse().join(''),x.bytes):m})],
+ ['Decoded rot13',t=>t.replace(new RegExp(`(?:codecs\\.decode\\(\\s*(${LIT})\\s*,|(${LIT})\\.decode\\()\\s*['"]rot_?13['"]\\s*\\)`,'g'),(m,a,b)=>{
+    const x=parseLit(a||b);if(!x)return m;
+    return fmt(x.val.replace(/[a-z]/gi,c=>{const k=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-k+13)%26+k)}),false)})],
+ ['Decoded base64',t=>t.replace(new RegExp(`(?:base64\\.)?b64decode\\(\\s*(${LIT})\\s*\\)`,'g'),(m,a)=>{
+    const x=parseLit(a);if(!x)return m;try{return fmt(atob(x.val.replace(/\s/g,'')),true)}catch{return m}})],
+ ['Decoded hex',t=>t.replace(new RegExp(`(?:bytes\\.fromhex|binascii\\.unhexlify|binascii\\.a2b_hex)\\(\\s*(${LIT})\\s*\\)`,'g'),(m,a)=>{
+    const x=parseLit(a);if(!x||!/^([0-9a-f]{2}|\s)+$/i.test(x.val))return m;
+    return fmt(x.val.replace(/\s/g,'').replace(/../g,h=>String.fromCharCode(parseInt(h,16))),true)})],
+ ['Decompressed zlib/gzip data',async t=>{
+    const re=new RegExp(`(zlib|gzip)\\.decompress\\(\\s*(${LIT})\\s*\\)`,'g');
+    const ms=[...t.matchAll(re)];if(!ms.length)return t;let out='',last=0;
+    for(const m of ms){
+      out+=t.slice(last,m.index);last=m.index+m[0].length;
+      const x=parseLit(m[2]);let res=null;
+      if(x){for(const f of (m[1]==='gzip'?['gzip','deflate']:['deflate','gzip','deflate-raw'])){
+        try{const s=new Blob([toBytes(x.val)]).stream().pipeThrough(new DecompressionStream(f));
+          res=fromBytes(new Uint8Array(await new Response(s).arrayBuffer()));break}catch{}}}
+      out+=res===null?m[0]:fmt(res,true);
+    }
+    return out+t.slice(last)}],
+ ['Decoded bytes to text',t=>t.replace(new RegExp(`(${LIT})\\.decode\\(\\s*(?:['"]utf-?8['"])?\\s*\\)`,'g'),(m,a)=>{
+    const x=parseLit(a);if(!x||!x.bytes)return m;const s=bin2text(x.val);return s===null?m:fmt(s,false)})],
+ ['Unwrapped exec/eval of a literal',t=>t.replace(new RegExp(`^([ \\t]*)([^\\n]*?)\\b(exec|eval)\\(\\s*(${LIT})\\s*\\)`,'gm'),(m,ind,pre,fn,a)=>{
+    const x=parseLit(a);if(!x)return m;
+    let code=x.bytes?bin2text(x.val):x.val;if(code===null||!printable(code))return m;
+    if(pre.trim()||(fn==='eval'&&code.includes('\n')))return m;
+    return code.split('\n').map((l,i)=>i?ind+l:ind+pre+l).join('\n')})],
+];
+
+async function run(){
+  let t=$('in').value;const log=[];
+  if(!t.trim()){$('out').value='';$('log').innerHTML='<li>Paste some code first.</li>';return}
+  const t0=t;
+  for(let round=1;round<=40;round++){
+    let changed=false;
+    for(const [name,fn] of passes){
+      let n;try{n=await fn(t)}catch(e){continue}
+      if(n!==t){t=n;changed=true;log.push(['Round '+round,name])}
+    }
+    if(!changed)break;
+  }
+  const warns=[];
+  if(/marshal\.loads/.test(t))warns.push('marshal.loads found: bytecode payloads need a Python-side decompiler (e.g. pycdc).');
+  if(/pyarmor|__pyarmor__/i.test(t))warns.push('PyArmor markers found: this cannot be reversed statically.');
+  if(/\b(bz2|lzma)\.decompress/.test(t))warns.push('bz2/lzma payload found: not supported in the browser.');
+  if(/\b(exec|eval)\(\s*(?!['"])/.test(t))warns.push('exec/eval of a non-literal expression remains; the argument is built at runtime.');
+  $('out').value=t;
+  const li=log.map(([r,n])=>`<li><b>${r}</b> ${n}</li>`).concat(warns.map(w=>`<li class="w">${w}</li>`));
+  if(!log.length)li.unshift('<li>No known obfuscation patterns matched. The code is unchanged.</li>');
+  $('log').innerHTML=li.join('');
+}
+$('go').onclick=run;
+$('clear').onclick=()=>{$('in').value='';$('out').value='';$('log').innerHTML='<li>No run yet.</li>'};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('out').value);$('copy').textContent='Copied'}catch{$('out').select();document.execCommand('copy');$('copy').textContent='Copied'}setTimeout(()=>$('copy').textContent='Copy result',1200)};
+$('sample').onclick=async()=>{
+  const inner="print('\\x68\\x65llo '+'wor'+chr(108)+chr(100))\nprint('done')";
+  const s=new Blob([new TextEncoder().encode(inner)]).stream().pipeThrough(new CompressionStream('deflate'));
+  const z=fromBytes(new Uint8Array(await new Response(s).arrayBuffer()));
+  $('in').value="import base64, zlib\nexec(zlib.decompress(base64.b64decode('"+btoa(z)+"')).decode())";
+  run();
+};
+
+}
+function mount(hostId,tplId,init){
+  const host=document.getElementById(hostId).attachShadow({mode:'open'});
+  host.appendChild(document.getElementById(tplId).content.cloneNode(true));
+  init(host);
+}
+mount('host-obf','tpl-obf',initObf);
+mount('host-de','tpl-de',initDe);
+
+const routes={'':['home','ChangePy – Python Obfuscator & Deobfuscator'],'/obfuscator':['obf','Obfuscator – ChangePy'],'/deobfuscator':['de','Deobfuscator – ChangePy']};
+function route(){
+  const h=decodeURIComponent(location.hash.replace(/^#/,'')).replace(/\/+$/,'');
+  const r=routes[h]||['nf','404 – ChangePy'];
+  document.querySelectorAll('[data-view]').forEach(s=>s.classList.toggle('show',s.dataset.view===r[0]));
+  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('on',a.dataset.nav===r[0]));
+  if(r[0]==='nf')document.getElementById('nf-path').textContent=JSON.stringify(h||'/');
+  document.title=r[1];
+  window.scrollTo(0,0);
+}
+addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
